@@ -26,7 +26,7 @@ contract FlightSuretyApp {
     
     uint256 AIRLINE_REGISTRATION_FEE = 10 ether;
     uint256 MAX_INSURANCE_PLAN = 1 ether;
-    uint256 INSURANCE_PAYOUT = 150; //(div by 100 to get to 1.5%)
+    uint256 INSURANCE_PAYOUT = 150; 
     uint256 AIRLINE_VOTING_THRESHOLD = 4;
     uint256 AIRLINE_VOTES_REQUIRED = 2;
 
@@ -455,68 +455,16 @@ contract FlightSuretyData {
     function hasFlightLanded (bytes32 flight) public view returns(bool);
     function processFlightStatus(address airline, string calldata flight, uint256 timestamp, uint status) external;
     function getAirlineFunds(address airline) public returns(uint256);
-    function isOperational() 
-                            public 
-                            view 
-                            returns(bool);
-    function setOperatingStatus
-                            (
-                                bool mode
-                            ) 
-                            external;
-    function registerAirline
-                            (   
-                                address airline,
-                                address originalAirline
-                            )
-                            external;
-    function registerFlight
-                            (   
-                                bytes32 flight,
-                                address airline,
-                                string calldata from,
-                                string calldata to
-                            )
-                            external;
-    function buy
-                            (  
-                                bytes32 flight,
-                                address passenger,
-                                uint256 amt,
-                                uint payout                           
-                            )
-                            external
-                            payable;
-    function creditInsurees
-                                (
-                                    bytes32 flight
-                                )
-                                internal;                                               
-    function pay
-                            (
-                                address payable passenger
-                            )
-                            external
-                            payable;
-    function fund
-                            (   
-                            )
-                            public
-                            payable;
-    function getFlightKey
-                        (
-                            address airline,
-                            string memory flight,
-                            uint256 timestamp
-                        )
-                        pure
-                        internal
-                        returns(bytes32);
-    function fundAirline
-                            (   
-                                address airline,
-                                uint256 amt
-                            )
-                            external;
+    function isOperational() public view returns(bool);
+    function setOperatingStatus(bool mode) external;
+    function registerAirline(address airline,address originalAirline) external;
+    function registerFlight(bytes32 flight, address airline, string calldata from, string calldata to) external;
+    function buy(bytes32 flight, address passenger, uint256 amt, uint payout) external payable;
+    function creditInsurees(bytes32 flight) internal;                                               
+    function pay(address payable passenger) external payable;
+    function fund() public payable;
+    function getFlightKey(address airline, string memory flight, uint256 timestamp) pure internal 
+              returns(bytes32);
+    function fundAirline(address airline, uint256 amt) external;
 
 }

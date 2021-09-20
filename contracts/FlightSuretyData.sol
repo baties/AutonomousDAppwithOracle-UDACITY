@@ -44,10 +44,8 @@ contract FlightSuretyData {
 
     mapping(address => uint256) public withdrawals;
 
-    /********************************************************************************************/
-    /*                                       EVENT DEFINITIONS                                  */
-    /********************************************************************************************/
-
+    
+    /*  EVENT DEFINITIONS  */
 
     /**
     * @dev Constructor
