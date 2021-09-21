@@ -1,13 +1,14 @@
 
 var Test = require('../config/testConfig.js');
 var BigNumber = require('bignumber.js');
-
+var Web3 = require('web3');
 contract('Flight Surety Tests', async (accounts) => {
 
   var config;
+  var web3;
   before('setup contract', async () => {
     config = await Test.Config(accounts);
-    await config.flightSuretyData.authorizeCaller(config.flightSuretyApp.address);
+    web3 = new Web3(new Web3.providers.HttpProvider(config.url));
   });
 
   /****************************************************************************************/
@@ -83,12 +84,112 @@ contract('Flight Surety Tests', async (accounts) => {
     catch(e) {
 
     }
-    let result = await config.flightSuretyData.isAirline.call(newAirline); 
+    let result = await config.flightSuretyData.isAirlineRegistered.call(newAirline); 
 
     // ASSERT
     assert.equal(result, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
- 
+
+
+    it('(airline) can be registered, but does not participate in contract until it submits funding of 10 ether', async () => {
+    
+    // ARRANGE
+    let newAirline = accounts[2];
+
+    // ACT
+    try {
+        await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+    }
+    catch(e) {
+
+    }
+    let result = await config.flightSuretyData.isAirlineRegistered.call(newAirline); 
+
+    // ASSERT
+    assert.equal(result, false, "Airline can be registered, but does not participate in contract until it submits funding of 10 ether");
+
+  });
+
+  it('(airline) after registered, can participate in contract after funding of 10 ether', async () => {
+    
+    // ARRANGE
+    let newAirline = accounts[2];
+    // ACT
+    try {
+        await config.flightSuretyApp.fundAirline({from: config.firstAirline, value: web3.utils.toWei('10', 'ether')});
+        let checkFunds = await config.flightSuretyData.getAirlineFunds(config.firstAirline);
+        await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+        
+    }
+    catch(e) {
+        console.log("error in (airline) after registered, can participate in contract after funding of 10 ether ", e);
+    }
+    let registeredOtherAirline = await config.flightSuretyData.isAirlineRegistered.call(newAirline); 
+
+    // ASSERT
+    assert.equal(registeredOtherAirline, true, "Airline can be registered, but does not participate in contract until it submits funding of 10 ether");
+
+  });
+
+  it('(airline) Only existing airline may register a new airline until there are at least four airlines registered', async () => {
+    
+        // ARRANGE
+        let airlineCount = await config.flightSuretyData.getRegisteredAirlineCount();
+        let wasAbleToRegister = true;
+        // ACT
+        try {
+            airlineCount++;
+            for (;airlineCount <= 4; airlineCount++) {
+                let newAirline = accounts[airlineCount];
+                await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+
+                let wasAbleToRegister = await config.flightSuretyData.isAirlineRegistered.call(newAirline);
+            }
+            
+        }
+        catch(e) {
+            console.log("error in (airline) after registered, can participate in contract after funding of 10 ether ", e);
+        }
+        
+        // ASSERT
+        assert.equal(wasAbleToRegister, true, "Existing airline was not able to register a new airline until there are at least four airlines registered");
+
+    }); 
+
+    it('(airline) Registration of fifth and subsequent airlines requires multi-party consensus of 50% of registered airlines', async () => {
+    
+        // ARRANGE
+        let airlineCount = await config.flightSuretyData.getRegisteredAirlineCount();
+        airlineCount++;
+        let isFunded = false;
+        let isNewAirlineRegistered = false;
+        let wasAbleToRegister = false;
+        newAirline = accounts[airlineCount];
+        console.log("Intial airlineCount!!!! " + airlineCount);
+        // ACT
+        try {
+            isFunded = await config.flightSuretyData.isAirlineRegistered.call(accounts[2]);
+            if (!isFunded)
+               await config.flightSuretyApp.fundAirline({from: accounts[2], value: web3.utils.toWei('10', 'ether')});
+            isFunded = await config.flightSuretyData.isAirlineRegistered.call(accounts[3]);
+            if (!isFunded)
+               await config.flightSuretyApp.fundAirline({from: accounts[3], value: web3.utils.toWei('10', 'ether')});
+            if (!isNewAirlineRegistered)
+                isNewAirlineRegistered = await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+            if (!isNewAirlineRegistered)
+                isNewAirlineRegistered = await config.flightSuretyApp.registerAirline(newAirline, {from: accounts[2]});
+            if (!isNewAirlineRegistered)
+                isNewAirlineRegistered = await config.flightSuretyApp.registerAirline(newAirline, {from: accounts[3]});
+
+        }
+        catch(e) {
+            console.log("(airline) Registration of fifth and subsequent airlines requires multi-party consensus of 50% of registered airlines ", e);
+        }
+        wasAbleToRegister = await config.flightSuretyData.isAirlineRegistered.call(newAirline);
+        // ASSERT
+        assert.equal(wasAbleToRegister, true, "Registration of fifth and subsequent airlines should requires multi-party consensus of 50% of registered airlines");
+
+    });
 
 });

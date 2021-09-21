@@ -13,19 +13,11 @@ import './flightsurety.css';
 
         // Read transaction
         contract.isOperational((error, result) => {
+            console.log(error,result);
             display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
         });
     
 /*
-        // User-submitted transaction
-        DOM.elid('get-flight-status').addEventListener('click', () => {
-            let flightKey = DOM.elid('flights-select2').selectedIndex; 
-            // Write transaction
-            contract.fetchFlightStatus(flightKey, (error, result) => {
-                display('get-flight-status', 'get-flight-status', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
-            });
-        })
-
         // User-submitted transaction
         DOM.elid('submit-oracle').addEventListener('click', () => {
             let flight = DOM.elid('flight-number').value;
@@ -37,10 +29,10 @@ import './flightsurety.css';
 */
         //--------------------------------------------------
 
-        contract.fundAirline("0xCF1E5437E08FE485C6DCde6bee96ccd0735000E6", (error, result) => {
+        contract.fundAirline("0x9A35D87482dd6857Ebef8af8Eb5DD06A7CEF2Fcc", (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Airline funded sucessfully..");
                     alert("Airline funded sucessfully..");
@@ -48,10 +40,10 @@ import './flightsurety.css';
                 
         });
 
-        contract.registerFlight("0xCF1E5437E08FE485C6DCde6bee96ccd0735000E6", "1", "loc1", "loc2", (error, result) => {
+        contract.registerFlight("0x9A35D87482dd6857Ebef8af8Eb5DD06A7CEF2Fcc", "1", "loc1", "loc2", (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Flight registered sucessfully..");
                     alert("Flight registered sucessfully..");
@@ -65,7 +57,7 @@ import './flightsurety.css';
             contract.registerAirline(airlineAddress, (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Airline Registerd sucessfully..");
                     alert("Airline Registerd sucessfully..");
@@ -81,7 +73,7 @@ import './flightsurety.css';
             contract.fundAirline(airlineAddress, (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Airline funded sucessfully..");
                     alert("Airline funded sucessfully..");
@@ -99,7 +91,7 @@ import './flightsurety.css';
             contract.registerFlight(airline, flight, from, to, (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Flight registered sucessfully..");
                     alert("Flight registered sucessfully..");
@@ -113,7 +105,7 @@ import './flightsurety.css';
             contract.getFlights((error, result) => {
                 if (error) {
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 } else{
                     for(element in result)
                     {
@@ -138,7 +130,7 @@ import './flightsurety.css';
             contract.fundAirline(airlineAddress, (error, result) => {
                 if(error){
                     console.log(error);
-                    alert("Error!!!");
+                    alert("Error !");
                 }else{
                     console.log("Airline funded sucessfully..");
                     alert("Airline funded sucessfully..");

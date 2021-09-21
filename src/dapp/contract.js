@@ -19,19 +19,15 @@ export default class Contract {
 
     initialize(callback) {
         this.web3.eth.getAccounts((error, accts) => {
-            console.log('accts', accts);
             this.owner = accts[0];
             this.account = accts[1];
             let counter = 1;
-            console.log('this.owner', this.owner);
             while(this.airlines.length < 5) {
                 this.airlines.push(accts[counter++]);
             }
-          //  console.log('airlines', this.airlines);
             while(this.passengers.length < 5) {
                 this.passengers.push(accts[counter++]);
             }
-          //  console.log('this.passengers', this.passengers);
             callback();
         });
     }
@@ -45,7 +41,7 @@ export default class Contract {
 
     getRegisteredFlights() {
         let self = this;
-        console.log('self.flightSuretyData.methods!!! ', self.flightSuretyData.methods);
+        console.log('self.flightSuretyData.methods! ', self.flightSuretyData.methods);
         let countRegisteredFlights = parseInt(self.flightSuretyData.methods.getRegisteredFlightCount().call());
         self.flights = [];
 
@@ -69,7 +65,7 @@ export default class Contract {
             .fetchFlightStatus(payload.airline, payload.flight, payload.timestamp)
             .send({ from: self.owner}, (error, result) => {
                 callback(error, payload);
-                console.log('Flight Status!!!! ', payload)
+                console.log('Flight Status! ', payload)
             });
     }
 
@@ -83,7 +79,7 @@ export default class Contract {
             let flight = self.flightSuretyData.flights(flightKey).call();
             self.flights.push(flight);
         }
-        console.log("self.flights!!! ", self.flights);
+        console.log("self.flights! ", self.flights);
         return self.flights;
     } 
 
