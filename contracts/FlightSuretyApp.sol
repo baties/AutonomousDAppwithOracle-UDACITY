@@ -39,7 +39,7 @@ contract FlightSuretyApp {
     }
 
     mapping(address => address[]) public airlineVotes;
-    FlightSuretyData fsd;
+    FlightSuretyData myFlightSuretyData;
 
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -71,43 +71,43 @@ contract FlightSuretyApp {
 
     modifier isAirlineNotRegistered(address airline) {
         require(
-            fsd.isAirlineRegistered(msg.sender), "Airline must be registered"
+            myFlightSuretyData.isAirlineRegistered(msg.sender), "Airline must be registered"
         );
         _;
     }
 
     modifier onlyNotRegisteredAirline(address airline) {
-        require(!fsd.isAirlineRegistered(airline), "Airline already registered");
+        require(!myFlightSuretyData.isAirlineRegistered(airline), "Airline already registered");
         _;
     }
 
     modifier onlyNotFundedAirline(address airline) {
-        require(!fsd.isAirlineFunded(airline), "Airline already funded");
+        require(!myFlightSuretyData.isAirlineFunded(airline), "Airline already funded");
         _;
     }
 
     modifier onlyRegisteredAirline(address airline) {
-        require(fsd.isAirlineRegistered(airline), "Airline already registered");
+        require(myFlightSuretyData.isAirlineRegistered(airline), "Airline already registered");
         _;
     }
 
     modifier onlyFundedAirline(address airline) {
-        require(fsd.isAirlineFunded(airline), "Airline already funded");
+        require(myFlightSuretyData.isAirlineFunded(airline), "Airline already funded");
         _;
     }
 
     modifier onlyRegisteredFlight(bytes32 flight) {
-        require(fsd.isFlightRegistered(flight), "Flight is not registered");
+        require(myFlightSuretyData.isFlightRegistered(flight), "Flight is not registered");
         _;
     }
 
     modifier onlyNotRegisteredFlight(bytes32 flight) {
-        require(!fsd.isFlightRegistered(flight), "Flight is already registered");
+        require(!myFlightSuretyData.isFlightRegistered(flight), "Flight is already registered");
         _;
     }
 
     modifier onlyNotLandedFlight(bytes32 flight) {
-        require(!fsd.hasFlightLanded(flight), "Flight is already landed");
+        require(!myFlightSuretyData.hasFlightLanded(flight), "Flight is already landed");
         _;
     }
 
@@ -121,12 +121,12 @@ contract FlightSuretyApp {
     */
     constructor
                                 (
-                                    address payable fsData
+                                    address payable myFlightSuretyDataata
                                 ) 
                                 public 
     {
         contractOwner = msg.sender;
-        fsd = FlightSuretyData(fsData);
+        myFlightSuretyData = FlightSuretyData(myFlightSuretyDataata);
     }
 
     /********************************************************************************************/
@@ -163,8 +163,8 @@ contract FlightSuretyApp {
                             onlyFundedAirline(msg.sender)
                             returns(bool success, uint256 votes)
     {
-        if (fsd.getRegisteredAirlineCount() <= AIRLINE_VOTING_THRESHOLD) {
-            fsd.registerAirline(airline, msg.sender);
+        if (myFlightSuretyData.getRegisteredAirlineCount() <= AIRLINE_VOTING_THRESHOLD) {
+            myFlightSuretyData.registerAirline(airline, msg.sender);
             return(true, 0);
         } else {
             bool duplicate = false;
@@ -178,8 +178,8 @@ contract FlightSuretyApp {
             if(!duplicate) 
                 airlineVotes[airline].push(msg.sender);
             
-            if(airlineVotes[airline].length >= fsd.getRegisteredAirlineCount().div(AIRLINE_VOTES_REQUIRED)) {
-                fsd.registerAirline(airline, msg.sender);
+            if(airlineVotes[airline].length >= myFlightSuretyData.getRegisteredAirlineCount().div(AIRLINE_VOTES_REQUIRED)) {
+                myFlightSuretyData.registerAirline(airline, msg.sender);
                 return(true, airlineVotes[airline].length);
             }
             return (false, airlineVotes[airline].length);
@@ -202,7 +202,7 @@ contract FlightSuretyApp {
                                 requireIsOperational
                                 onlyFundedAirline(msg.sender)
     {
-        fsd.registerFlight(
+        myFlightSuretyData.registerFlight(
             getFlightKey(msg.sender, flight, timestamp),
             msg.sender,
             from,
@@ -224,7 +224,7 @@ contract FlightSuretyApp {
                                 internal
                                 requireIsOperational
     {
-        fsd.processFlightStatus(airline, flight, timestamp, statusCode);
+        myFlightSuretyData.processFlightStatus(airline, flight, timestamp, statusCode);
     }
 
 
@@ -255,10 +255,9 @@ contract FlightSuretyApp {
                          requireIsOperational
                          onlyRegisteredAirline(msg.sender)
                          onlyNotFundedAirline(msg.sender)
-                       //  require(msg.value >= AIRLINE_REGISTRATION_FEE, "Minimum funding needed to register") 
     {
-        address(uint160(address(fsd))).transfer(AIRLINE_REGISTRATION_FEE);
-        return fsd.fundAirline(msg.sender, AIRLINE_REGISTRATION_FEE);
+        address(uint160(address(myFlightSuretyData))).transfer(AIRLINE_REGISTRATION_FEE);
+        return myFlightSuretyData.fundAirline(msg.sender, AIRLINE_REGISTRATION_FEE);
     }
 
     function buy (bytes32 flight)
@@ -267,10 +266,9 @@ contract FlightSuretyApp {
                              requireIsOperational 
                              onlyRegisteredFlight(flight) 
                              onlyNotLandedFlight(flight) 
-                   //          require(msg.value <= MAX_INSURANCE_PLAN, "Value exceeds max insurance plan.") 
                              {
-        address(uint160(address(fsd))).transfer(msg.value);                        
-        fsd.buy(flight, msg.sender, msg.value, INSURANCE_PAYOUT);
+        address(uint160(address(myFlightSuretyData))).transfer(msg.value);                        
+        myFlightSuretyData.buy(flight, msg.sender, msg.value, INSURANCE_PAYOUT);
 
     }
 // region ORACLE MANAGEMENT

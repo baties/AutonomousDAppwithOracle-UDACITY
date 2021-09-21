@@ -25,9 +25,6 @@
  const infuraKey = "7a4a0aef97434743a1b3c513cbf9884e"; // Set this to YOUR Infura Key
 
  const HDWalletProvider = require('truffle-hdwallet-provider');
- // const fs = require('fs');
- // const mnemonic = fs.readFileSync(".secret").toString().trim();
- // const mnemonic = 'quote ensure arrive vote dinosaur illegal wood equal disagree teach tray planet';
  
  module.exports = {
    /**

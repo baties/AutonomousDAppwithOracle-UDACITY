@@ -241,7 +241,6 @@ contract FlightSuretyData {
                             requireIsOperational
                             onlyNonRegisteredFlight(flightKey)
     { 
-   //     bytes32 flightKey = getFlightKey(airline, flight, landing);
         flights[flightKey] = Flight(true, from, to, airline, 0);
         registeredFlights.push(flightKey);
         emit FlightRegistered(flightKey);
