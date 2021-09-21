@@ -19,15 +19,58 @@
         </button>
     </nav>
 
-    <main class="container">
+    <nav class="container">           
+            <div id="display-wrapper" class="top-20">
+            </div>
+    </nav>
 
-        <div id="display-wrapper" class="top-20">
+    <div class="container" style="margin-top: 400px">
+        <label class="h4">Airline Registration</label>
+        <div class="row ">
+            <input type="text" id="register-airline-address" placeholder="Airline address">
+          <!-- <btn class="btn btn-primary" id="register-airline-btn">Register Airline</btn>--> 
+            <btn class="btn btn-primary" id="fund-airline-btn" style="margin-left:20px">Fund Airline</btn>
         </div>
-        <div class="row top-20">
-            <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
-        </div>
-    </main>
+    </div>
 
+    <div class="container">
+        <label class="h4">Flight Registration</label>
+        <div class="row ">
+            <input type="text" id="register-flight-airline" placeholder="Airline address">
+            <input type="text" id="register-flight" placeholder="Flight ">
+            <input type="text" id="register-flight-from" placeholder="From">
+            <input type="text" id="register-flight-to" placeholder="To">
+            <btn class="btn btn-primary" id="register-flight-btn">Register Flight</btn>
+        </div>
+    </div>
+
+    <div class="container">
+        <label class="h4">Buy insurance</label>
+            <div class="row top-20">
+                <label class="form" for="insurance-airline-name">Airline</label>
+                <input type="text" id="insurance-airline-name" placeholder="Airline">
+                <label class="form" for="select-flight">Available Flights</label>
+                <select style="width: 200px" id="select-flight"></select>
+                <btn class="btn btn-primary" id="get-flights" style="margin-left:20px">Get Flights</btn>
+            </div>
+            <div class="row top-20">
+                <label class="form">Insurance</label>
+                <input type="text" style="width: 300px" id="insurance-amount" placeholder="Insurance should be less then 1 ether">
+                <btn class="btn btn-primary" id="buy-insurance">Buy</btn>
+                <btn class="btn btn-primary" id="submit-oracle" style="margin-left:20px">Fetch Flight Status</btn>
+            </div>
+    </div>
+
+    <div class="container">
+        <label class="h4">Claim insurance</label>
+            <div class="row top-20">
+                <label class="form">Passenger address</label>
+                <input type="text" id="passenger-address" >
+                <label class="form" id="balance-amount">0 ether</label>
+                <btn class="btn btn-primary" id="remaining-balance">Remaining Balance</btn>
+                <btn class="btn btn-primary" style="margin-left:20px" id="withdraw">Withdraw</btn>
+            </div>
+    </div>
 </body>
 
 </html>

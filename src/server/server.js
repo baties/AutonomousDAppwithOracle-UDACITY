@@ -26,4 +26,3 @@ app.get('/api', (req, res) => {
 
 export default app;
 
-
